@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  backend:
+    build: .
+    container_name: streaming_BE
+    ports:
+      - "8080:8080"
+    volumes:
+      - ~/.gradle:/root/.gradle
+      - ./src:/app/src
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/streaming
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    restart: always  # 컨테이너가 종료되면 자동 재시작
+
+  db:
+    image: postgres:17
+    container_name: streaming_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: streaming
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d streaming"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  db_data:
