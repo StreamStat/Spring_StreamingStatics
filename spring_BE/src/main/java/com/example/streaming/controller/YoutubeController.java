@@ -18,11 +18,6 @@ public class YoutubeController {
 
     @GetMapping("/youtube/top-channels")
     public List<ChannelDTO> getTopChannels() {
-        List<String> channelIds = List.of(
-                "UC4rlAVgAK0SGk-yTfe48Qpw", // 진용진
-                "UCsU-I-vHLiaMfV_ceaYz5rQ", // 피식대학
-                "UCekSb5Ik_2vBnKnHwhfF7Rw"  // ENA
-        );
-        return youtubeService.getTopChannels(channelIds);
+        return youtubeService.getTopChannels();
     }
 }
